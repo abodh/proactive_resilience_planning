@@ -27,7 +27,7 @@ configs = {
     'generator_ramp_rate': 0.02,            # fraction of generators Pmax that it can ramp per min -> MW/min.
                                             # this is approximated value and will be only used if data is unavailable
     'MCS_converged_scenarios_only': True,   # Only MCS converged scenarios are taken -> mean else [min,median,max]
-    'ED_solution_check': False              # assign economic dispatch solution to the generators
+    'ED_solution_check': False               # assign economic dispatch solution to the generators
 }
 
 # obtains the hardening and upgrade cost for each lines based on the kV ratings and corresponding $/mile parameter
@@ -37,7 +37,7 @@ if not test_case_loop:
     # change the parameters here if running the model for a single instance
 
     configs['risk_preference'] = 0              # lambda value in the equation; defines risk preference
-    configs['total_operator_budget'] = 1 * 1e9  # total budget of the system operator in billion dollars
+    configs['total_operator_budget'] = 0 * 1e9  # total budget of the system operator in billion dollars
     configs['DG_connection_points'] = 0         # number of backup DGs that can be
     configs['lines_to_harden'] = 0              # number of lines to harden
     configs['lines_to_upgrade'] = 0             # number of lines to be upgraded

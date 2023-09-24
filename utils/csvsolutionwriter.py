@@ -8,17 +8,16 @@
 #  This software is distributed under the 3-clause BSD License.
 #  ___________________________________________________________________________
 
-# major update from Abodh on creating a pandas df and store them in separate excel sheets of same file
+# major update from Abodh on creating a pandas df and store them in separate csvs
 
 import pyomo.common.plugin
 from pysp import solutionwriter
 from pysp.scenariotree.tree_structure import \
     ScenarioTree
 
-import pdb
 import pandas as pd
 from optim_config import configs
-import numpy as np
+import os
 
 
 #
@@ -36,9 +35,23 @@ def index_to_string(index):
     return result
 
 
+def excel_sheet_save(df, filepath, sheetname, index=False):
+
+    # Create excel sheet if it does not exist
+    # executing this for every sheet will overwrite the file so we need to do this just during file creation
+    if not os.path.exists(filepath):
+        df.to_excel(filepath, sheet_name=sheetname, index=index)
+
+    # now if it exists then append the sheet on that file
+    # an added layer of protection comes if the sheet exists -> it overwrites
+    else:
+        with pd.ExcelWriter(filepath, engine='openpyxl', if_sheet_exists='replace', mode='a') as writer:
+            df.to_excel(writer, sheet_name=sheetname, index=index)
+
+
 def write_solution_in_excel(scenario_tree, output_file_prefix):
     """
-    Write the solution to a excel file with customized sheets.
+    Write the solution to a csv.
     Args: scenario_tree: a scenario tree object populated with a solution.
           output_file_prefix: a string to indicate the file names for output.
                               output_file_prefix + ".csv"
@@ -51,9 +64,9 @@ def write_solution_in_excel(scenario_tree, output_file_prefix):
             "ScenarioTree object - type of supplied "
             "object=" + str(type(scenario_tree)))
 
-    solution_filename = output_file_prefix + \
-                        str(configs['risk_preference']) + \
-                        str(configs['total_operator_budget']/1e9) + ".xlsx"
+    solution_filename = output_file_prefix + f"-{configs['risk_preference']}-{configs['total_operator_budget']/1e9}-" \
+                                             f"{configs['DG_connection_points']}-{configs['lines_to_harden']}-" \
+                                             f"{configs['lines_to_upgrade']}" + ".csv"
 
     results_df = []
     for stage in scenario_tree.stages:
@@ -70,14 +83,8 @@ def write_solution_in_excel(scenario_tree, output_file_prefix):
                 results_df.append(results_dict)
 
     final_results_df = pd.DataFrame(results_df)
-
-    # use excel writer object to display result in different sheets
-    excel_writer = pd.ExcelWriter(f"results/{solution_filename}", engine='xlsxwriter')
-    final_results_df.to_excel(excel_writer, sheet_name=f"{str(configs['DG_connection_points'])}-"
-                                                       f"{str(configs['lines_to_harden'])}-"
-                                                       f"{str(configs['lines_to_upgrade'])}")
-    excel_writer.close()
-
+    # final_results_df.to_csv(f"results/{solution_filename}", index=False)
+    final_results_df.to_csv(f"{solution_filename}", index=False)
     print("Scenario tree solution written to file=" + solution_filename)
 
 

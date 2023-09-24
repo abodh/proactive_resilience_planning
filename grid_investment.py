@@ -1,4 +1,5 @@
 import os
+
 # get the current working directory
 # ensure that the active directory is the current working directory
 dir_file = os.getcwd()
@@ -11,9 +12,6 @@ import numpy as np
 import scipy.io as readmat
 import math
 import pandas as pd
-import pdb
-
-# import user defined libraries
 from utils.optim_config import configs
 
 # testcase to use for the optimization
@@ -528,10 +526,9 @@ if ED_solution_check:
     # fix the generator solution to the desired solution
     for node in range(model.nNodes):
         for gens in generators_each_bus[node]:
-            if counter == num_gens - 1:
-                break
-            model.gen_fix.add(model.bus_gen_ss[node, gens] == gen_solution['ED'][counter] / model.Pbase)
-            counter = counter + 1
+            # if counter == num_gens - 1:
+            #     break
+            model.gen_fix.add(model.bus_gen_ss[node, gens] == (gen_solution['ED'][gens] / model.Pbase))
 
 
 #########################################################################################################

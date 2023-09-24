@@ -14,8 +14,8 @@ import pandas as pd
 
 
 def upgrade_cost(test_case_id, upgrade_cost_kV):
-    branch_data = pd.read_csv('power_system_test_cases/case' + test_case_id + '_branch.csv', delimiter=',')
-    bus_data = pd.read_csv('power_system_test_cases/case' + test_case_id + '_bus.csv', delimiter=',')
+    branch_data = pd.read_csv('../power_system_test_cases/case' + test_case_id + '_branch.csv', delimiter=',')
+    bus_data = pd.read_csv('../power_system_test_cases/case' + test_case_id + '_bus.csv', delimiter=',')
 
     # cost for hardening is approx. 5 times the cost for overhead upgrade
     branch_data['kV'] = 0 * len(branch_data)
@@ -52,3 +52,4 @@ if __name__ == "__main__":
                     '230': 1800 * 1000   # $ per mile (source: PG&E per unit cost on 230 kV; rounded off from 1816)
                     }
     branch_cost_data = upgrade_cost(test_case_id, upgrade_cost_kV)
+    branch_cost_data.to_csv(r"..\analysis_scripts\branch_cost_analysis.csv")

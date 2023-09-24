@@ -1,4 +1,9 @@
 import os
+# get the current working directory
+# ensure that the active directory is the current working directory
+dir_file = os.getcwd()
+os.chdir(dir_file)
+
 import numpy as np
 from time import time
 import pdb
@@ -8,7 +13,7 @@ import pandas as pd
 The model can be run independently from the terminal. Use this main file if you want to loop through multiple test
 cases.
 '''
-test_case_loop = True
+test_case_loop = False
 
 
 def planning_simulation():
@@ -50,6 +55,15 @@ if __name__ == "__main__":
                                                                                        (0 < risk < 0.95)):
                             continue
 
+                        # print the current iteration to observe the status
+                        print ('############################ CURRENT SIMULATION ###################################')
+                        print(f'risk:{risk} \t '
+                              f'budget:{budget} \t '
+                              f'DG:{DG_num} \t '
+                              f'harden:{harden_num} \t '
+                              f'cap:{linecap_num}')
+                        print('############################ CURRENT SIMULATION ###################################')
+
                         # start timer
                         start_time = time()
 
@@ -63,7 +77,6 @@ if __name__ == "__main__":
                         execution_time_record[iter_counter] = round(elapsed_time, 2)
 
                         iter_counter += 1
-                        pdb.set_trace()
 
     execution_time_df = pd.DataFrame(execution_time_record.items(), columns=['iteration', 'execution_time(s)'])
-    execution_time_df.to_csv('results/total_execution_time.csv', delimiter=',')
+    execution_time_df.to_csv('results/total_execution_time.csv')
